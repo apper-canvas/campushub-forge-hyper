@@ -1,0 +1,52 @@
+[
+  {
+    "Id": 1,
+    "courseId": 1,
+    "title": "Binary Search Tree Implementation",
+    "dueDate": "2024-01-25",
+    "totalMarks": 100,
+    "description": "Implement a binary search tree with all basic operations",
+    "status": "submitted",
+    "submittedDate": "2024-01-23"
+  },
+  {
+    "Id": 2,
+    "courseId": 1,
+    "title": "Graph Algorithms Assignment",
+    "dueDate": "2024-01-30",
+    "totalMarks": 100,
+    "description": "Implement BFS and DFS algorithms",
+    "status": "pending",
+    "submittedDate": null
+  },
+  {
+    "Id": 3,
+    "courseId": 2,
+    "title": "Database Design Project",
+    "dueDate": "2024-02-05",
+    "totalMarks": 100,
+    "description": "Design a database for library management system",
+    "status": "submitted",
+    "submittedDate": "2024-02-03"
+  },
+  {
+    "Id": 4,
+    "courseId": 2,
+    "title": "SQL Queries Assignment",
+    "dueDate": "2024-02-10",
+    "totalMarks": 50,
+    "description": "Write complex SQL queries for given scenarios",
+    "status": "pending",
+    "submittedDate": null
+  },
+  {
+    "Id": 5,
+    "courseId": 3,
+    "title": "Requirements Analysis Document",
+    "dueDate": "2024-02-15",
+    "totalMarks": 100,
+    "description": "Create requirements document for e-commerce system",
+    "status": "submitted",
+    "submittedDate": "2024-02-12"
+  }
+]

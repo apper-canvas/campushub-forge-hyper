@@ -1,0 +1,68 @@
+[
+  {
+    "Id": 1,
+    "title": "Mid-term Exam Schedule Released",
+    "content": "The mid-term examination schedule for Spring 2024 has been published. Please check the academic portal for your individual timetable and exam venues.",
+    "type": "exam",
+    "priority": "high",
+    "sender": "Academic Office",
+    "course": null,
+    "createdAt": "2024-01-20T09:00:00Z",
+    "isRead": false
+  },
+  {
+    "Id": 2,
+    "title": "Holiday Notice - Republic Day",
+    "content": "The college will remain closed on January 26th in observance of Republic Day. All classes and examinations scheduled for this date are postponed.",
+    "type": "holiday",
+    "priority": "medium",
+    "sender": "Administration",
+    "course": null,
+    "createdAt": "2024-01-18T14:30:00Z",
+    "isRead": true
+  },
+  {
+    "Id": 3,
+    "title": "Assignment Submission Reminder",
+    "content": "This is a reminder that your Data Structures assignment is due tomorrow at 11:59 PM. Late submissions will incur a penalty.",
+    "type": "deadline",
+    "priority": "high",
+    "sender": "Dr. Emily Carter",
+    "course": "CS301",
+    "createdAt": "2024-01-24T16:00:00Z",
+    "isRead": false
+  },
+  {
+    "Id": 4,
+    "title": "Guest Lecture on AI and Machine Learning",
+    "content": "Join us for an exciting guest lecture by Dr. Sarah Johnson from MIT on 'Future of AI and Machine Learning' on February 2nd at 2 PM in Auditorium A.",
+    "type": "event",
+    "priority": "medium",
+    "sender": "Computer Science Department",
+    "course": null,
+    "createdAt": "2024-01-22T11:15:00Z",
+    "isRead": true
+  },
+  {
+    "Id": 5,
+    "title": "Library Extended Hours During Exams",
+    "content": "The library will be open 24/7 during the examination period from February 15th to March 15th to support student preparation.",
+    "type": "announcement",
+    "priority": "low",
+    "sender": "Library Services",
+    "course": null,
+    "createdAt": "2024-01-21T08:45:00Z",
+    "isRead": true
+  },
+  {
+    "Id": 6,
+    "title": "Database Lab Session Rescheduled",
+    "content": "The database lab session scheduled for Thursday has been moved to Friday 2-4 PM due to faculty unavailability.",
+    "type": "announcement",
+    "priority": "medium",
+    "sender": "Prof. David Martinez",
+    "course": "CS302",
+    "createdAt": "2024-01-23T13:20:00Z",
+    "isRead": false
+  }
+]

@@ -1,0 +1,49 @@
+[
+  {
+    "Id": 1,
+    "studentId": 1,
+    "courseId": 1,
+    "assignmentId": 1,
+    "marks": 85,
+    "feedback": "Good implementation, could improve code comments",
+    "gradedDate": "2024-01-26"
+  },
+  {
+    "Id": 2,
+    "studentId": 1,
+    "courseId": 2,
+    "assignmentId": 3,
+    "marks": 78,
+    "feedback": "Well-structured database design with minor normalization issues",
+    "gradedDate": "2024-02-06"
+  },
+  {
+    "Id": 3,
+    "studentId": 1,
+    "courseId": 3,
+    "assignmentId": 5,
+    "marks": 92,
+    "feedback": "Excellent requirements analysis, very detailed",
+    "gradedDate": "2024-02-16"
+  },
+  {
+    "Id": 4,
+    "studentId": 1,
+    "courseId": 1,
+    "examType": "midterm",
+    "marks": 88,
+    "totalMarks": 100,
+    "feedback": "Strong performance in algorithms section",
+    "gradedDate": "2024-02-20"
+  },
+  {
+    "Id": 5,
+    "studentId": 1,
+    "courseId": 2,
+    "examType": "quiz1",
+    "marks": 45,
+    "totalMarks": 50,
+    "feedback": "Good understanding of database concepts",
+    "gradedDate": "2024-02-18"
+  }
+]

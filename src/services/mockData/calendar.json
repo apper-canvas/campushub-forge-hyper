@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "title": "Data Structures Quiz",
+    "type": "exam",
+    "date": "2024-01-26",
+    "time": "10:00-11:00",
+    "courseId": 1,
+    "location": "Room 201",
+    "description": "Quiz on trees and graphs"
+  },
+  {
+    "Id": 2,
+    "title": "Database Assignment Due",
+    "type": "deadline",
+    "date": "2024-01-30",
+    "time": "23:59",
+    "courseId": 2,
+    "location": "Online Submission",
+    "description": "Library management system design"
+  },
+  {
+    "Id": 3,
+    "title": "Republic Day Holiday",
+    "type": "holiday",
+    "date": "2024-01-26",
+    "time": "All Day",
+    "courseId": null,
+    "location": "College Closed",
+    "description": "National holiday"
+  },
+  {
+    "Id": 4,
+    "title": "AI Guest Lecture",
+    "type": "event",
+    "date": "2024-02-02",
+    "time": "14:00-16:00",
+    "courseId": null,
+    "location": "Auditorium A",
+    "description": "Future of AI and Machine Learning"
+  },
+  {
+    "Id": 5,
+    "title": "Mid-term Exams Begin",
+    "type": "exam",
+    "date": "2024-02-15",
+    "time": "09:00",
+    "courseId": null,
+    "location": "Various Rooms",
+    "description": "Spring 2024 mid-term examination period"
+  },
+  {
+    "Id": 6,
+    "title": "Software Engineering Project Demo",
+    "type": "assignment",
+    "date": "2024-02-12",
+    "time": "14:00-18:00",
+    "courseId": 3,
+    "location": "Computer Lab 2",
+    "description": "Final project presentations"
+  }
+]
