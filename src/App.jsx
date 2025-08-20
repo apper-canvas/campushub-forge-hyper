@@ -7,12 +7,13 @@ import Attendance from "@/components/pages/Attendance";
 import Grades from "@/components/pages/Grades";
 import Calendar from "@/components/pages/Calendar";
 import Announcements from "@/components/pages/Announcements";
-
+import Library from "@/components/pages/Library";
+import BookIssues from "@/components/pages/BookIssues";
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
-        <Routes>
+<Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="courses" element={<Courses />} />
@@ -20,6 +21,8 @@ function App() {
             <Route path="grades" element={<Grades />} />
             <Route path="calendar" element={<Calendar />} />
             <Route path="announcements" element={<Announcements />} />
+            <Route path="library" element={<Library />} />
+            <Route path="book-issues" element={<BookIssues />} />
           </Route>
         </Routes>
         

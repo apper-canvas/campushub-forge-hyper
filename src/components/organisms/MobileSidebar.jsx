@@ -6,7 +6,7 @@ const MobileSidebar = ({ isOpen, onClose, className }) => {
   const location = useLocation();
   
   const menuItems = [
-    {
+{
       name: "Dashboard",
       href: "/",
       icon: "LayoutDashboard"
@@ -35,6 +35,16 @@ const MobileSidebar = ({ isOpen, onClose, className }) => {
       name: "Announcements",
       href: "/announcements",
       icon: "Bell"
+    },
+    {
+      name: "Library",
+      href: "/library",
+      icon: "Library"
+    },
+    {
+      name: "Book Issues",
+      href: "/book-issues",
+      icon: "BookMarked"
     }
   ];
 
