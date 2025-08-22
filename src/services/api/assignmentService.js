@@ -8,20 +8,21 @@ const apperClient = new ApperClient({
 export const assignmentService = {
   async getAll() {
     try {
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Id" } },
-          { field: { Name: "courseId" } },
-          { field: { Name: "title" } },
-          { field: { Name: "dueDate" } },
-          { field: { Name: "totalMarks" } },
-          { field: { Name: "description" } },
-          { field: { Name: "status" } },
-          { field: { Name: "submittedDate" } }
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "total_marks_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "submitted_date_c" } }
         ]
       };
 
-      const response = await apperClient.fetchRecords('Assignments', params);
+      const response = await apperClient.fetchRecords('assignment_c', params);
       
       if (!response.success) {
         console.error(response.message);
@@ -42,20 +43,21 @@ export const assignmentService = {
 
   async getById(id) {
     try {
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Id" } },
-          { field: { Name: "courseId" } },
-          { field: { Name: "title" } },
-          { field: { Name: "dueDate" } },
-          { field: { Name: "totalMarks" } },
-          { field: { Name: "description" } },
-          { field: { Name: "status" } },
-          { field: { Name: "submittedDate" } }
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "total_marks_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "submitted_date_c" } }
         ]
       };
 
-      const response = await apperClient.getRecordById('Assignments', parseInt(id), params);
+      const response = await apperClient.getRecordById('assignment_c', parseInt(id), params);
       
       if (!response.success) {
         console.error(response.message);
@@ -76,27 +78,28 @@ export const assignmentService = {
 
   async getByCourse(courseId) {
     try {
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Id" } },
-          { field: { Name: "courseId" } },
-          { field: { Name: "title" } },
-          { field: { Name: "dueDate" } },
-          { field: { Name: "totalMarks" } },
-          { field: { Name: "description" } },
-          { field: { Name: "status" } },
-          { field: { Name: "submittedDate" } }
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "total_marks_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "submitted_date_c" } }
         ],
         where: [
           {
-            FieldName: "courseId",
+            FieldName: "course_id_c",
             Operator: "EqualTo",
             Values: [parseInt(courseId)]
           }
         ]
       };
 
-      const response = await apperClient.fetchRecords('Assignments', params);
+      const response = await apperClient.fetchRecords('assignment_c', params);
       
       if (!response.success) {
         console.error(response.message);
@@ -121,7 +124,7 @@ export const assignmentService = {
         records: [assignmentData]
       };
 
-      const response = await apperClient.createRecord('Assignments', params);
+const response = await apperClient.createRecord('assignment_c', params);
       
       if (!response.success) {
         console.error(response.message);
@@ -155,7 +158,7 @@ export const assignmentService = {
         records: [{ Id: parseInt(id), ...assignmentData }]
       };
 
-      const response = await apperClient.updateRecord('Assignments', params);
+const response = await apperClient.updateRecord('assignment_c', params);
       
       if (!response.success) {
         console.error(response.message);
@@ -189,7 +192,7 @@ export const assignmentService = {
         RecordIds: [parseInt(id)]
       };
 
-      const response = await apperClient.deleteRecord('Assignments', params);
+const response = await apperClient.deleteRecord('assignment_c', params);
       
       if (!response.success) {
         console.error(response.message);
@@ -219,27 +222,28 @@ export const assignmentService = {
 
   async getPendingAssignments() {
     try {
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Id" } },
-          { field: { Name: "courseId" } },
-          { field: { Name: "title" } },
-          { field: { Name: "dueDate" } },
-          { field: { Name: "totalMarks" } },
-          { field: { Name: "description" } },
-          { field: { Name: "status" } },
-          { field: { Name: "submittedDate" } }
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "total_marks_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "submitted_date_c" } }
         ],
         where: [
           {
-            FieldName: "status",
+            FieldName: "status_c",
             Operator: "EqualTo",
             Values: ["pending"]
           }
         ]
       };
 
-      const response = await apperClient.fetchRecords('Assignments', params);
+      const response = await apperClient.fetchRecords('assignment_c', params);
       
       if (!response.success) {
         console.error(response.message);
