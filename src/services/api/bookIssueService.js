@@ -23,7 +23,7 @@ export const bookIssueService = {
     return { ...issue };
   },
 
-  async create(issueData) {
+async create(issueData) {
     await new Promise(resolve => setTimeout(resolve, 300));
     
     // Validate required fields
@@ -34,14 +34,29 @@ export const bookIssueService = {
       }
     }
 
+    // Ensure bookId and studentId are integers
+    const bookId = parseInt(issueData.bookId);
+    const studentId = parseInt(issueData.studentId);
+    
+    if (!Number.isInteger(bookId) || bookId <= 0) {
+      throw new Error('Invalid book ID');
+    }
+    
+    if (!Number.isInteger(studentId) || studentId <= 0) {
+      throw new Error('Invalid student ID');
+    }
+
     // Check if book is available
     try {
-      const book = await bookService.getById(issueData.bookId);
+      const book = await bookService.getById(bookId);
       if (book.availableCopies === 0) {
         throw new Error('Book is not available for issue');
       }
     } catch (err) {
-      throw new Error('Invalid book ID');
+      if (err.message === 'Book not found') {
+        throw new Error('Selected book does not exist');
+      }
+      throw err;
     }
 
     const newIssue = {
