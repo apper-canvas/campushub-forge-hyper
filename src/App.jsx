@@ -1,15 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Layout from "@/components/organisms/Layout";
-import Dashboard from "@/components/pages/Dashboard";
-import Courses from "@/components/pages/Courses";
-import CourseDetails from "@/components/pages/CourseDetails";
-import Attendance from "@/components/pages/Attendance";
-import Grades from "@/components/pages/Grades";
+import { courseService } from "@/services/api/courseService";
+import { assignmentService } from "@/services/api/assignmentService";
+import Assignments from "@/components/pages/Assignments";
+import React from "react";
+import ApperIcon from "@/components/ApperIcon";
 import Calendar from "@/components/pages/Calendar";
+import CourseDetails from "@/components/pages/CourseDetails";
+import Dashboard from "@/components/pages/Dashboard";
+import Attendance from "@/components/pages/Attendance";
+import Courses from "@/components/pages/Courses";
+import Grades from "@/components/pages/Grades";
 import Announcements from "@/components/pages/Announcements";
 import Library from "@/components/pages/Library";
 import BookIssues from "@/components/pages/BookIssues";
+import Layout from "@/components/organisms/Layout";
 function App() {
   return (
     <BrowserRouter>
@@ -17,8 +22,9 @@ function App() {
 <Routes>
 <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
-            <Route path="courses" element={<Courses />} />
+<Route path="courses" element={<Courses />} />
             <Route path="courses/:id" element={<CourseDetails />} />
+            <Route path="assignments" element={<Assignments />} />
             <Route path="attendance" element={<Attendance />} />
             <Route path="grades" element={<Grades />} />
             <Route path="calendar" element={<Calendar />} />
