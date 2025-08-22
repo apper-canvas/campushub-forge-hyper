@@ -1,74 +1,285 @@
-import calendarData from "@/services/mockData/calendar.json";
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 export const calendarService = {
   async getAll() {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...calendarData];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "title" } },
+          { field: { Name: "type" } },
+          { field: { Name: "date" } },
+          { field: { Name: "time" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "location" } },
+          { field: { Name: "description" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Calendar', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching calendar events:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching calendar events:", error);
+        throw error;
+      }
+    }
   },
 
   async getById(id) {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    const event = calendarData.find(e => e.Id === parseInt(id));
-    if (!event) {
-      throw new Error("Calendar event not found");
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "title" } },
+          { field: { Name: "type" } },
+          { field: { Name: "date" } },
+          { field: { Name: "time" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "location" } },
+          { field: { Name: "description" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById('Calendar', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching calendar event:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching calendar event:", error);
+        throw error;
+      }
     }
-    return { ...event };
   },
 
   async getByDateRange(startDate, endDate) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return calendarData.filter(event => {
-      const eventDate = new Date(event.date);
-      return eventDate >= new Date(startDate) && eventDate <= new Date(endDate);
-    }).map(event => ({ ...event }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "title" } },
+          { field: { Name: "type" } },
+          { field: { Name: "date" } },
+          { field: { Name: "time" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "location" } },
+          { field: { Name: "description" } }
+        ],
+        where: [
+          {
+            FieldName: "date",
+            Operator: "GreaterThanOrEqualTo",
+            Values: [startDate]
+          },
+          {
+            FieldName: "date",
+            Operator: "LessThanOrEqualTo", 
+            Values: [endDate]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Calendar', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching calendar events by date range:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching calendar events by date range:", error);
+        throw error;
+      }
+    }
   },
 
   async getByMonth(year, month) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return calendarData.filter(event => {
-      const eventDate = new Date(event.date);
-      return eventDate.getFullYear() === year && eventDate.getMonth() === month - 1;
-    }).map(event => ({ ...event }));
+    const startDate = `${year}-${month.toString().padStart(2, '0')}-01`;
+    const endDate = new Date(year, month, 0).toISOString().split('T')[0];
+    return this.getByDateRange(startDate, endDate);
   },
 
   async getUpcoming(days = 7) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const now = new Date();
-    const futureDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
-    
-    return calendarData.filter(event => {
-      const eventDate = new Date(event.date);
-      return eventDate >= now && eventDate <= futureDate;
-    })
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .map(event => ({ ...event }));
+    try {
+      const now = new Date();
+      const futureDate = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000));
+      
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "title" } },
+          { field: { Name: "type" } },
+          { field: { Name: "date" } },
+          { field: { Name: "time" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "location" } },
+          { field: { Name: "description" } }
+        ],
+        where: [
+          {
+            FieldName: "date",
+            Operator: "GreaterThanOrEqualTo",
+            Values: [now.toISOString().split('T')[0]]
+          },
+          {
+            FieldName: "date",
+            Operator: "LessThanOrEqualTo",
+            Values: [futureDate.toISOString().split('T')[0]]
+          }
+        ],
+        orderBy: [
+          {
+            fieldName: "date",
+            sorttype: "ASC"
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Calendar', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching upcoming events:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching upcoming events:", error);
+        throw error;
+      }
+    }
   },
 
   async create(eventData) {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newId = Math.max(...calendarData.map(e => e.Id)) + 1;
-    const newEvent = { Id: newId, ...eventData };
-    calendarData.push(newEvent);
-    return { ...newEvent };
+    try {
+      const params = {
+        records: [eventData]
+      };
+
+      const response = await apperClient.createRecord('Calendar', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create calendar event ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating calendar event:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error creating calendar event:", error);
+        throw error;
+      }
+    }
   },
 
   async update(id, eventData) {
-    await new Promise(resolve => setTimeout(resolve, 350));
-    const index = calendarData.findIndex(e => e.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Calendar event not found");
+    try {
+      const params = {
+        records: [{ Id: parseInt(id), ...eventData }]
+      };
+
+      const response = await apperClient.updateRecord('Calendar', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update calendar event ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating calendar event:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error updating calendar event:", error);
+        throw error;
+      }
     }
-    calendarData[index] = { ...calendarData[index], ...eventData };
-    return { ...calendarData[index] };
   },
 
   async delete(id) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = calendarData.findIndex(e => e.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Calendar event not found");
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord('Calendar', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete calendar event ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting calendar event:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error deleting calendar event:", error);
+        throw error;
+      }
     }
-    const deletedEvent = calendarData.splice(index, 1)[0];
-    return { ...deletedEvent };
   }
 };

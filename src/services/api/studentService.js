@@ -1,45 +1,176 @@
-import studentsData from "@/services/mockData/students.json";
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 export const studentService = {
   async getAll() {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...studentsData];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "name" } },
+          { field: { Name: "rollNumber" } },
+          { field: { Name: "department" } },
+          { field: { Name: "semester" } },
+          { field: { Name: "email" } },
+          { field: { Name: "phone" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Students', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching students:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching students:", error);
+        throw error;
+      }
+    }
   },
 
   async getById(id) {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    const student = studentsData.find(s => s.Id === parseInt(id));
-    if (!student) {
-      throw new Error("Student not found");
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "name" } },
+          { field: { Name: "rollNumber" } },
+          { field: { Name: "department" } },
+          { field: { Name: "semester" } },
+          { field: { Name: "email" } },
+          { field: { Name: "phone" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById('Students', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching student:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching student:", error);
+        throw error;
+      }
     }
-    return { ...student };
   },
 
   async create(studentData) {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newId = Math.max(...studentsData.map(s => s.Id)) + 1;
-    const newStudent = { Id: newId, ...studentData };
-    studentsData.push(newStudent);
-    return { ...newStudent };
+    try {
+      const params = {
+        records: [studentData]
+      };
+
+      const response = await apperClient.createRecord('Students', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create student ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating student:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error creating student:", error);
+        throw error;
+      }
+    }
   },
 
   async update(id, studentData) {
-    await new Promise(resolve => setTimeout(resolve, 350));
-    const index = studentsData.findIndex(s => s.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Student not found");
+    try {
+      const params = {
+        records: [{ Id: parseInt(id), ...studentData }]
+      };
+
+      const response = await apperClient.updateRecord('Students', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update student ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating student:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error updating student:", error);
+        throw error;
+      }
     }
-    studentsData[index] = { ...studentsData[index], ...studentData };
-    return { ...studentsData[index] };
   },
 
   async delete(id) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = studentsData.findIndex(s => s.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Student not found");
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord('Students', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete student ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting student:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error deleting student:", error);
+        throw error;
+      }
     }
-    const deletedStudent = studentsData.splice(index, 1)[0];
-    return { ...deletedStudent };
   }
 };

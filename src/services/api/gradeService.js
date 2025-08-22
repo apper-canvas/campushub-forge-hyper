@@ -1,85 +1,336 @@
-import gradesData from "@/services/mockData/grades.json";
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 export const gradeService = {
   async getAll() {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...gradesData];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "studentId" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "assignmentId" } },
+          { field: { Name: "examType" } },
+          { field: { Name: "marks" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "feedback" } },
+          { field: { Name: "gradedDate" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching grades:", error);
+        throw error;
+      }
+    }
   },
 
   async getById(id) {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    const grade = gradesData.find(g => g.Id === parseInt(id));
-    if (!grade) {
-      throw new Error("Grade not found");
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "studentId" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "assignmentId" } },
+          { field: { Name: "examType" } },
+          { field: { Name: "marks" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "feedback" } },
+          { field: { Name: "gradedDate" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById('Grades', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grade:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching grade:", error);
+        throw error;
+      }
     }
-    return { ...grade };
   },
 
   async getByStudent(studentId) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return gradesData.filter(g => g.studentId === parseInt(studentId))
-      .map(grade => ({ ...grade }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "studentId" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "assignmentId" } },
+          { field: { Name: "examType" } },
+          { field: { Name: "marks" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "feedback" } },
+          { field: { Name: "gradedDate" } }
+        ],
+        where: [
+          {
+            FieldName: "studentId",
+            Operator: "EqualTo",
+            Values: [parseInt(studentId)]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by student:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching grades by student:", error);
+        throw error;
+      }
+    }
   },
 
   async getByCourse(courseId) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return gradesData.filter(g => g.courseId === parseInt(courseId))
-      .map(grade => ({ ...grade }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "studentId" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "assignmentId" } },
+          { field: { Name: "examType" } },
+          { field: { Name: "marks" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "feedback" } },
+          { field: { Name: "gradedDate" } }
+        ],
+        where: [
+          {
+            FieldName: "courseId",
+            Operator: "EqualTo",
+            Values: [parseInt(courseId)]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by course:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching grades by course:", error);
+        throw error;
+      }
+    }
   },
 
   async getByStudentAndCourse(studentId, courseId) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return gradesData.filter(g => 
-      g.studentId === parseInt(studentId) && g.courseId === parseInt(courseId)
-    ).map(grade => ({ ...grade }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "studentId" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "assignmentId" } },
+          { field: { Name: "examType" } },
+          { field: { Name: "marks" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "feedback" } },
+          { field: { Name: "gradedDate" } }
+        ],
+        where: [
+          {
+            FieldName: "studentId",
+            Operator: "EqualTo",
+            Values: [parseInt(studentId)]
+          },
+          {
+            FieldName: "courseId",
+            Operator: "EqualTo",
+            Values: [parseInt(courseId)]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by student and course:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching grades by student and course:", error);
+        throw error;
+      }
+    }
   },
 
   async create(gradeData) {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newId = Math.max(...gradesData.map(g => g.Id)) + 1;
-    const newGrade = { Id: newId, ...gradeData };
-    gradesData.push(newGrade);
-    return { ...newGrade };
+    try {
+      const params = {
+        records: [gradeData]
+      };
+
+      const response = await apperClient.createRecord('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create grade ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating grade:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error creating grade:", error);
+        throw error;
+      }
+    }
   },
 
   async update(id, gradeData) {
-    await new Promise(resolve => setTimeout(resolve, 350));
-    const index = gradesData.findIndex(g => g.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Grade not found");
+    try {
+      const params = {
+        records: [{ Id: parseInt(id), ...gradeData }]
+      };
+
+      const response = await apperClient.updateRecord('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update grade ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating grade:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error updating grade:", error);
+        throw error;
+      }
     }
-    gradesData[index] = { ...gradesData[index], ...gradeData };
-    return { ...gradesData[index] };
   },
 
   async delete(id) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = gradesData.findIndex(g => g.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Grade not found");
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord('Grades', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete grade ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting grade:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error deleting grade:", error);
+        throw error;
+      }
     }
-    const deletedGrade = gradesData.splice(index, 1)[0];
-    return { ...deletedGrade };
   },
 
   async calculateGPA(studentId) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const studentGrades = gradesData.filter(g => g.studentId === parseInt(studentId));
-    
-    if (studentGrades.length === 0) return 0;
-    
-    const totalPoints = studentGrades.reduce((sum, grade) => {
-      const percentage = (grade.marks / (grade.totalMarks || 100)) * 100;
-      let points = 0;
+    try {
+      const studentGrades = await this.getByStudent(studentId);
       
-      if (percentage >= 90) points = 4.0;
-      else if (percentage >= 80) points = 3.0;
-      else if (percentage >= 70) points = 2.0;
-      else if (percentage >= 60) points = 1.0;
+      if (studentGrades.length === 0) return 0;
       
-      return sum + points;
-    }, 0);
-    
-    return (totalPoints / studentGrades.length).toFixed(2);
+      const totalPoints = studentGrades.reduce((sum, grade) => {
+        const percentage = (grade.marks / (grade.totalMarks || 100)) * 100;
+        let points = 0;
+        
+        if (percentage >= 90) points = 4.0;
+        else if (percentage >= 80) points = 3.0;
+        else if (percentage >= 70) points = 2.0;
+        else if (percentage >= 60) points = 1.0;
+        
+        return sum + points;
+      }, 0);
+      
+      return (totalPoints / studentGrades.length).toFixed(2);
+    } catch (error) {
+      console.error("Error calculating GPA:", error);
+      return 0;
+    }
   }
 };

@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useSelector } from 'react-redux';
 import { cn } from "@/utils/cn";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import { AuthContext } from "../../App";
 
 const Header = ({ onMenuClick, className }) => {
-  const [showNotifications, setShowNotifications] = useState(false);
-
+const [showNotifications, setShowNotifications] = useState(false);
+  const { logout } = useContext(AuthContext);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const notifications = [
     {
       Id: 1,
@@ -110,14 +114,29 @@ const Header = ({ onMenuClick, className }) => {
               </div>
             )}
           </div>
-          
-          <div className="flex items-center space-x-3">
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-medium text-gray-900">John Smith</p>
-              <p className="text-xs text-gray-500">Computer Science</p>
-            </div>
-            <div className="w-10 h-10 bg-gradient-to-br from-accent to-orange-500 rounded-full flex items-center justify-center">
-              <ApperIcon name="User" className="w-5 h-5 text-white" />
+<div className="flex items-center space-x-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={logout}
+              className="flex items-center space-x-2"
+            >
+              <ApperIcon name="LogOut" className="w-4 h-4" />
+              <span>Logout</span>
+            </Button>
+            
+            <div className="flex items-center space-x-3">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-medium text-gray-900">
+                  {isAuthenticated && user ? `${user.firstName || 'User'} ${user.lastName || ''}`.trim() : 'John Smith'}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {isAuthenticated && user?.accounts?.[0]?.companyName || 'Computer Science'}
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-gradient-to-br from-accent to-orange-500 rounded-full flex items-center justify-center">
+                <ApperIcon name="User" className="w-5 h-5 text-white" />
+              </div>
             </div>
           </div>
         </div>

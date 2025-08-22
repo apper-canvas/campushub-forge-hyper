@@ -1,57 +1,260 @@
-import assignmentsData from "@/services/mockData/assignments.json";
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 export const assignmentService = {
   async getAll() {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...assignmentsData];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "title" } },
+          { field: { Name: "dueDate" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "submittedDate" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Assignments', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching assignments:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching assignments:", error);
+        throw error;
+      }
+    }
   },
 
   async getById(id) {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    const assignment = assignmentsData.find(a => a.Id === parseInt(id));
-    if (!assignment) {
-      throw new Error("Assignment not found");
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "title" } },
+          { field: { Name: "dueDate" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "submittedDate" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById('Assignments', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching assignment:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching assignment:", error);
+        throw error;
+      }
     }
-    return { ...assignment };
   },
 
   async getByCourse(courseId) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return assignmentsData.filter(a => a.courseId === parseInt(courseId))
-      .map(assignment => ({ ...assignment }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "title" } },
+          { field: { Name: "dueDate" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "submittedDate" } }
+        ],
+        where: [
+          {
+            FieldName: "courseId",
+            Operator: "EqualTo",
+            Values: [parseInt(courseId)]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Assignments', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching assignments by course:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching assignments by course:", error);
+        throw error;
+      }
+    }
   },
 
   async create(assignmentData) {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newId = Math.max(...assignmentsData.map(a => a.Id)) + 1;
-    const newAssignment = { Id: newId, ...assignmentData };
-    assignmentsData.push(newAssignment);
-    return { ...newAssignment };
+    try {
+      const params = {
+        records: [assignmentData]
+      };
+
+      const response = await apperClient.createRecord('Assignments', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create assignment ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating assignment:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error creating assignment:", error);
+        throw error;
+      }
+    }
   },
 
   async update(id, assignmentData) {
-    await new Promise(resolve => setTimeout(resolve, 350));
-    const index = assignmentsData.findIndex(a => a.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Assignment not found");
+    try {
+      const params = {
+        records: [{ Id: parseInt(id), ...assignmentData }]
+      };
+
+      const response = await apperClient.updateRecord('Assignments', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update assignment ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating assignment:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error updating assignment:", error);
+        throw error;
+      }
     }
-    assignmentsData[index] = { ...assignmentsData[index], ...assignmentData };
-    return { ...assignmentsData[index] };
   },
 
   async delete(id) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = assignmentsData.findIndex(a => a.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Assignment not found");
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord('Assignments', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete assignment ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting assignment:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error deleting assignment:", error);
+        throw error;
+      }
     }
-    const deletedAssignment = assignmentsData.splice(index, 1)[0];
-    return { ...deletedAssignment };
   },
 
   async getPendingAssignments() {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    return assignmentsData.filter(a => a.status === "pending")
-      .map(assignment => ({ ...assignment }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "courseId" } },
+          { field: { Name: "title" } },
+          { field: { Name: "dueDate" } },
+          { field: { Name: "totalMarks" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "submittedDate" } }
+        ],
+        where: [
+          {
+            FieldName: "status",
+            Operator: "EqualTo",
+            Values: ["pending"]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Assignments', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching pending assignments:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching pending assignments:", error);
+        throw error;
+      }
+    }
   }
 };

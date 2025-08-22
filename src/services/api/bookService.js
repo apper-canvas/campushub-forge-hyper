@@ -1,121 +1,231 @@
-import bookData from '@/services/mockData/books.json';
+const { ApperClient } = window.ApperSDK;
 
-let books = [...bookData];
-let nextId = Math.max(...books.map(book => book.Id)) + 1;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 export const bookService = {
   async getAll() {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return [...books];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "title" } },
+          { field: { Name: "author" } },
+          { field: { Name: "isbn" } },
+          { field: { Name: "genre" } },
+          { field: { Name: "publicationYear" } },
+          { field: { Name: "totalCopies" } },
+          { field: { Name: "availableCopies" } },
+          { field: { Name: "description" } },
+          { field: { Name: "dateAdded" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('Books', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching books:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching books:", error);
+        throw error;
+      }
+    }
   },
 
   async getById(id) {
-    if (!Number.isInteger(id)) {
-      throw new Error('ID must be an integer');
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "title" } },
+          { field: { Name: "author" } },
+          { field: { Name: "isbn" } },
+          { field: { Name: "genre" } },
+          { field: { Name: "publicationYear" } },
+          { field: { Name: "totalCopies" } },
+          { field: { Name: "availableCopies" } },
+          { field: { Name: "description" } },
+          { field: { Name: "dateAdded" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById('Books', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching book:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error fetching book:", error);
+        throw error;
+      }
     }
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const book = books.find(book => book.Id === id);
-    if (!book) {
-      throw new Error('Book not found');
-    }
-    return { ...book };
   },
 
   async create(bookData) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    // Validate required fields
-    const requiredFields = ['title', 'author', 'isbn', 'genre', 'publicationYear', 'totalCopies'];
-    for (const field of requiredFields) {
-      if (!bookData[field]) {
-        throw new Error(`${field} is required`);
+    try {
+      const recordData = {
+        ...bookData,
+        availableCopies: bookData.totalCopies,
+        dateAdded: new Date().toISOString().split('T')[0]
+      };
+
+      const params = {
+        records: [recordData]
+      };
+
+      const response = await apperClient.createRecord('Books', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create book ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating book:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error creating book:", error);
+        throw error;
       }
     }
-
-    // Check for duplicate ISBN
-    if (books.some(book => book.isbn === bookData.isbn)) {
-      throw new Error('A book with this ISBN already exists');
-    }
-
-    const newBook = {
-      ...bookData,
-      Id: nextId++,
-      availableCopies: bookData.totalCopies,
-      dateAdded: new Date().toISOString()
-    };
-
-    books.push(newBook);
-    return { ...newBook };
   },
 
   async update(id, bookData) {
-    if (!Number.isInteger(id)) {
-      throw new Error('ID must be an integer');
-    }
-    
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const bookIndex = books.findIndex(book => book.Id === id);
-    if (bookIndex === -1) {
-      throw new Error('Book not found');
-    }
+    try {
+      const params = {
+        records: [{ Id: parseInt(id), ...bookData }]
+      };
 
-    // Check for duplicate ISBN (excluding current book)
-    if (bookData.isbn && books.some(book => book.isbn === bookData.isbn && book.Id !== id)) {
-      throw new Error('A book with this ISBN already exists');
+      const response = await apperClient.updateRecord('Books', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update book ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating book:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error updating book:", error);
+        throw error;
+      }
     }
-
-    const currentBook = books[bookIndex];
-    const updatedBook = {
-      ...currentBook,
-      ...bookData,
-      Id: id, // Ensure ID doesn't change
-      // Update available copies if total copies changed
-      availableCopies: bookData.totalCopies !== undefined 
-        ? Math.max(0, currentBook.availableCopies + (bookData.totalCopies - currentBook.totalCopies))
-        : currentBook.availableCopies
-    };
-
-    books[bookIndex] = updatedBook;
-    return { ...updatedBook };
   },
 
   async delete(id) {
-    if (!Number.isInteger(id)) {
-      throw new Error('ID must be an integer');
-    }
-    
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const bookIndex = books.findIndex(book => book.Id === id);
-    if (bookIndex === -1) {
-      throw new Error('Book not found');
-    }
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
 
-    books.splice(bookIndex, 1);
-    return true;
+      const response = await apperClient.deleteRecord('Books', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete book ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting book:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error deleting book:", error);
+        throw error;
+      }
+    }
   },
 
   // Helper method to update available copies (used by issue service)
   async updateAvailableCopies(id, change) {
-    const bookIndex = books.findIndex(book => book.Id === id);
-    if (bookIndex === -1) {
-      throw new Error('Book not found');
+    try {
+      // Get current book data
+      const currentBook = await this.getById(id);
+      const newAvailableCount = currentBook.availableCopies + change;
+      
+      if (newAvailableCount < 0 || newAvailableCount > currentBook.totalCopies) {
+        throw new Error('Invalid copy count');
+      }
+
+      const params = {
+        records: [{ Id: parseInt(id), availableCopies: newAvailableCount }]
+      };
+
+      const response = await apperClient.updateRecord('Books', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update book available copies ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message);
+        }
+        
+        return response.results[0].data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating book available copies:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
+      } else {
+        console.error("Error updating book available copies:", error);
+        throw error;
+      }
     }
-
-    const book = books[bookIndex];
-    const newAvailableCount = book.availableCopies + change;
-    
-    if (newAvailableCount < 0 || newAvailableCount > book.totalCopies) {
-      throw new Error('Invalid copy count');
-    }
-
-    books[bookIndex] = {
-      ...book,
-      availableCopies: newAvailableCount
-    };
-
-    return books[bookIndex];
   }
 };
